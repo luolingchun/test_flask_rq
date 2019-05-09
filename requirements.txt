@@ -1,0 +1,6 @@
+flask_migrate
+flask_script
+flask_sqlalchemy
+rq
+redis
+flask-RQ2
