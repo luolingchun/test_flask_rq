@@ -3,7 +3,8 @@
 # @Author  : llc
 # @File    : manage.py
 
-from app.webapp import application, db
+from app import db
+from app.webapp import application
 from app.models.user import User
 from flask_migrate import Migrate, MigrateCommand
 from flask_script import Manager, Shell, prompt_bool

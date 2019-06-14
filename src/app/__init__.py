@@ -6,9 +6,11 @@
 
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
+from flask_rq2 import RQ
 from config import config
 
 db = SQLAlchemy()
+rq = RQ()
 
 
 def create_app(config_name):
@@ -16,6 +18,7 @@ def create_app(config_name):
     app.config.from_object(config[config_name])
 
     db.init_app(app)
+    rq.init_app(app)
 
     from .apis import api
     api.init_app(app)

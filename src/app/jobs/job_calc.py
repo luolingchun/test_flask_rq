@@ -2,7 +2,7 @@
 # @Time    : 2019/5/8 15:17
 # @Author  : llc
 # @File    : jobs.py
-from app.webapp import rq
+from app import rq
 
 
 @rq.job

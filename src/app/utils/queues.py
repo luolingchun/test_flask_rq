@@ -3,7 +3,7 @@
 # @Author  : llc
 # @File    : queues.py
 
-from app.webapp import rq
+from app import rq
 
 default_queue = rq.get_queue()
 
