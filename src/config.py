@@ -8,7 +8,8 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 
-class Config(object):  # 所有配置类的父类，通用的配置写在这里
+class Config(object):
+    '''所有配置类的父类，通用的配置写在这里'''
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'hard to guess string'
     # SQLALCHEMY_COMMIT_ON_TEARDOWN = True
     SQLALCHEMY_TRACK_MODIFICATIONS = False
@@ -18,33 +19,35 @@ class Config(object):  # 所有配置类的父类，通用的配置写在这里
     # 配置redis
     REDIS_HOST, REDIS_PORT = os.environ.get('REDIS_PORT', 'tcp://202.107.245.46:3333')[6:].split(':')
     RQ_REDIS_DB = 0
-    RQ_REDIS_URL = 'redis://{}:{}/{}'.format(REDIS_HOST, REDIS_PORT, RQ_REDIS_DB)
+    RQ_REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{RQ_REDIS_DB}'
     # 配置RQ
-    RQ_QUEUES = ['default', 'low']
+    RQ_QUEUES = ['high', 'default', 'low']
+    RQ_QUEUES_ALL = ['all', 'high', 'default', 'low']
+    JOB_STATUS = ['queued', 'started', 'finished', 'failed']
+    RQ_DEFAULT_TIMEOUT = 3600 * 24  # 1天
 
 
-class DevelopmentConfig(Config):  # 开发环境配置类
+class DevelopmentConfig(Config):
     DEBUG = True
     SQLALCHEMY_DATABASE_URI = \
         'sqlite:///' + os.path.join(basedir, 'data-dev.db')
 
 
-class TestingConfig(Config):  # 测试环境配置类
+class TestingConfig(Config):
     TESTING = True
     SQLALCHEMY_DATABASE_URI = \
         'sqlite:///' + os.path.join(basedir, 'data-test.db')
 
 
-class ProductionConfig(Config):  # 生产环境配置类
+class ProductionConfig(Config):
     SQLALCHEMY_DATABASE_URI = \
         'sqlite:///' + os.path.join(basedir, 'data.db')
 
 
-config = {  # config字典注册了不同的配置，默认配置为开发环境，本例使用开发环境
+config = {
     'development': DevelopmentConfig,
     'testing': TestingConfig,
     'production': ProductionConfig,
-    'default': DevelopmentConfig
 }
 
-CONFIG_LAVEL = 'default'
+CONFIG_LAVEL = 'production'

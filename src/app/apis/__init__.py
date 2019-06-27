@@ -9,6 +9,10 @@ from flask_restplus import Api
 # api_blueprint = Blueprint('apis', __name__)
 api = Api(version='v1.0', title='任务管理服务', description='', doc='/api', prefix='/api')
 
-from .job_api import ns as job_ns
+from .job import ns as job_ns
+from .queue import ns as queue_ns
+from .worker import ns as worker_ns
 
 api.add_namespace(job_ns)
+api.add_namespace(queue_ns)
+api.add_namespace(worker_ns)
