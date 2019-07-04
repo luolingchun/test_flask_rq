@@ -17,13 +17,13 @@ class Config(object):
     UPLOAD_TMP_FILE = os.path.join(basedir, 'tmp')
 
     # 配置redis
-    REDIS_HOST, REDIS_PORT = os.environ.get('REDIS_PORT', 'tcp://202.107.245.46:3333')[6:].split(':')
+    REDIS_HOST, REDIS_PORT = os.environ.get('REDIS_PORT', 'tcp://localhost:3333')[6:].split(':')
     RQ_REDIS_DB = 0
     RQ_REDIS_URL = f'redis://{REDIS_HOST}:{REDIS_PORT}/{RQ_REDIS_DB}'
     # 配置RQ
     RQ_QUEUES = ['high', 'default', 'low']
     RQ_QUEUES_ALL = ['all', 'high', 'default', 'low']
-    JOB_STATUS = ['queued', 'started', 'finished', 'failed']
+    RQ_JOB_STATUS = ['queued', 'started', 'finished', 'failed']
     RQ_DEFAULT_TIMEOUT = 3600 * 24  # 1天
 
 

@@ -9,4 +9,7 @@ import time
 
 def add(x, y):
     # time.sleep(100)
+    for i in range(10):
+        print(i)
+        time.sleep(4)
     return x + y

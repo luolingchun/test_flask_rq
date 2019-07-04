@@ -2,6 +2,7 @@
 # @Time    : 2019/5/8 15:18
 # @Author  : llc
 # @File    : job.py
+import traceback
 
 from flask_restplus import Resource, Namespace, reqparse
 from rq.exceptions import NoSuchJobError
@@ -37,7 +38,7 @@ class NewJobAPI(Resource):
 
 
 parser2 = reqparse.RequestParser(bundle_errors=True)
-parser2.add_argument(name='job_status', type=str, choices=(Config.JOB_STATUS), location='path', required=True,
+parser2.add_argument(name='job_status', type=str, choices=(Config.RQ_JOB_STATUS), location='path', required=True,
                      help=JOB_STATUS_HELP)
 parser2.add_argument(name='queue_name', type=str, choices=(Config.RQ_QUEUES_ALL), location='path', required=True,
                      help=QUEUE_ALL_HELP)
@@ -49,7 +50,7 @@ class QueuedJobListAPI(Resource):
     @ns.doc(id='get job list', description='根据任务状态、队列名称获取任务列表')
     def get(self, job_status, queue_name):
         """获取任务列表"""
-        if job_status not in Config.JOB_STATUS:
+        if job_status not in Config.RQ_JOB_STATUS:
             return {'code': StatesCode.JOB_STATUS_NO_EXIST, 'message': '任务状态不存在！'}
         if queue_name not in Config.RQ_QUEUES_ALL:
             return {'code': StatesCode.QUEUE_NOT_EXIST, 'message': '任务队列不存在！'}
@@ -57,7 +58,7 @@ class QueuedJobListAPI(Resource):
         if job_status == 'queued':
             if queue_name == 'all':
                 for queue_name in Config.RQ_QUEUES:
-                    job_list = queue_dict[queue_name].get_job_ids()
+                    job_list += queue_dict[queue_name].get_job_ids()
             else:
                 job_list = queue_dict[queue_name].get_job_ids()
         elif job_status == 'started':
@@ -129,8 +130,8 @@ class JobAPI(Resource):
             return {'code': StatesCode.JOB_NOT_EXIST, 'message': '任务不存在！'}
         except Exception as e:
             return {'code': StatesCode.UNKNOWN_ERROR, 'message': str(e)}
-        # job.cancel()
-        job.delete()
+        job.cancel()
+        # job.delete()
         return {'code': 0, 'data': job_id}
 
 
@@ -145,6 +146,7 @@ class RequeueJobAPI(Resource):
         except NoSuchJobError:
             return {'code': StatesCode.JOB_NOT_EXIST, 'message': '任务不存在！'}
         except Exception as e:
-            return {'code': StatesCode.UNKNOWN_ERROR, 'message': str(e)}
+            traceback.print_exc()
+            return {'code': StatesCode.UNKNOWN_ERROR, 'message': f'位置错误：{str(e)}'}
 
         return {'code': 0, 'data': job_id}
