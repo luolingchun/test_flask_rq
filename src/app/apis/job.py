@@ -13,6 +13,7 @@ from app.jobs.calc import add
 from config import Config
 from app.utils.rq.queues import queue_dict
 from app import rq2
+from uuid import uuid4
 
 __version__ = 'v1'
 ns = Namespace(f'{__version__}/jobs', description='任务管理 API接口')
@@ -30,8 +31,9 @@ class NewJobAPI(Resource):
         '''添加任务'''
         if queue_name not in Config.RQ_QUEUES:
             return {'code': StatesCode.QUEUE_NOT_EXIST, 'message': '任务队列不存在！'}
-
-        job = queue_dict[queue_name].enqueue(add, args=(1, 2), job_timeout=Config.RQ_DEFAULT_TIMEOUT)
+        job_id = str(uuid4())
+        job = queue_dict[queue_name].enqueue(add, args=(1, 2, job_id), job_id=job_id,
+                                             job_timeout=Config.RQ_DEFAULT_TIMEOUT)
         # job = queue_dict[queue_name].enqueue(add, args=(1, '2'), job_timeout=Config.RQ_DEFAULT_TIMEOUT)  # 错误任务
         job_id = job.get_id()
         return {'code': 0, 'data': job_id}
