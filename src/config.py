@@ -23,7 +23,7 @@ class Config(object):
     # 配置RQ
     RQ_QUEUES = ['high', 'default', 'low']
     RQ_QUEUES_ALL = ['all', 'high', 'default', 'low']
-    RQ_JOB_STATUS = ['queued', 'started', 'finished', 'failed']
+    RQ_JOB_STATUS = ['queued', 'started', 'finished', 'failed','deferred']
     RQ_DEFAULT_TIMEOUT = 3600 * 24  # 1天
 
 

@@ -7,7 +7,7 @@ import traceback
 from flask_restplus import Resource, Namespace, reqparse
 from rq.exceptions import NoSuchJobError
 from rq.job import Job, requeue_job
-from rq.registry import StartedJobRegistry, FailedJobRegistry, FinishedJobRegistry
+from rq.registry import StartedJobRegistry, FailedJobRegistry, FinishedJobRegistry, DeferredJobRegistry
 from app.defines import StatesCode, QUEUE_HELP, QUEUE_ALL_HELP, JOB_STATUS_HELP
 from app.jobs.calc import add
 from config import Config
@@ -33,7 +33,8 @@ class NewJobAPI(Resource):
             return {'code': StatesCode.QUEUE_NOT_EXIST, 'message': '任务队列不存在！'}
         job_id = str(uuid4())
         job = queue_dict[queue_name].enqueue(add, args=(1, 2, job_id), job_id=job_id,
-                                             job_timeout=Config.RQ_DEFAULT_TIMEOUT)
+                                             job_timeout=Config.RQ_DEFAULT_TIMEOUT,)
+                                             # depends_on='ccebebb4-2f4f-4829-b487-683178d90170')
         # job = queue_dict[queue_name].enqueue(add, args=(1, '2'), job_timeout=Config.RQ_DEFAULT_TIMEOUT)  # 错误任务
         job_id = job.get_id()
         return {'code': 0, 'data': job_id}
@@ -87,6 +88,14 @@ class QueuedJobListAPI(Resource):
             else:
                 failed_job_registry = FailedJobRegistry(queue=queue_dict[queue_name])
                 job_list = failed_job_registry.get_job_ids()
+        elif job_status == 'deferred':
+            if queue_name == 'all':
+                for queue_name in Config.RQ_QUEUES:
+                    deferred_job_registry = DeferredJobRegistry(queue=queue_dict[queue_name])
+                    job_list += deferred_job_registry.get_job_ids()
+            else:
+                deferred_job_registry = DeferredJobRegistry(queue=queue_dict[queue_name])
+                job_list = deferred_job_registry.get_job_ids()
         return {'code': StatesCode.SUCCESS, 'data': job_list}
 
 
@@ -119,6 +128,7 @@ class JobAPI(Resource):
             "started_at": job.started_at.strftime('%Y-%m-%d %H:%M:%S') if job.started_at else '',
             "ended_at": job.ended_at.strftime('%Y-%m-%d %H:%M:%S') if job.ended_at else '',
             "exc_info": job.exc_info,
+            "dependent_ids": job.dependent_ids,
             "meta": job.meta
         }
         return {'code': 0, 'data': info}
