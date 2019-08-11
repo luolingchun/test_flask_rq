@@ -2,6 +2,7 @@
 # @Time    : 2019/5/8 15:18
 # @Author  : llc
 # @File    : job.py
+
 import traceback
 from flask import request
 from flask_restplus import Resource, Namespace, reqparse
@@ -11,7 +12,7 @@ from rq.registry import StartedJobRegistry, FailedJobRegistry, FinishedJobRegist
 from app.defines import StatesCode, QUEUE_HELP, QUEUE_ALL_HELP, JOB_STATUS_HELP
 from app.jobs.calc import add
 from config import Config
-from app.utils.rq.queues import queue_dict
+from app.utils.queues import queue_dict
 from app import rq2
 from uuid import uuid4
 
