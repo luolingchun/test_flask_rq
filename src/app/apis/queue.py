@@ -15,5 +15,5 @@ ns = Namespace(f'{__version__}/queues', description='队列管理 API接口')
 class QueueAPI(Resource):
     @ns.doc(id='get queue list', description='获取队列列表')
     def get(self):
-        '''获取队列列表'''
+        """获取队列列表"""
         return {"code": StatesCode.SUCCESS, "data": Config.RQ_QUEUES}

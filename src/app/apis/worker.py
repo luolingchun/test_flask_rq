@@ -16,7 +16,7 @@ ns = Namespace(f'{__version__}/workers', description='worker管理 API接口')
 class WorkerAPI(Resource):
     @ns.doc(id='get job list', description='获取worker列表')
     def get(self):
-        '''获取worker列表'''
+        """获取worker列表"""
         worker_list = []
         total = Worker.count(connection=rq2.connection)
         workers = Worker.all(connection=rq2.connection)

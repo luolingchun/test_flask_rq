@@ -19,13 +19,13 @@ __version__ = 'v1'
 ns = Namespace(f'{__version__}/jobs', description='任务管理 API接口')
 
 parser1 = reqparse.RequestParser(bundle_errors=True)
-parser1.add_argument(name='queue_name', type=str, choices=(Config.RQ_QUEUES_ALL), location='args', required=True,
+parser1.add_argument(name='queue_name', type=str, choices=tuple(Config.RQ_QUEUES_ALL), location='args', required=True,
                      help=QUEUE_ALL_HELP)
-parser1.add_argument(name='job_status', type=str, choices=(Config.RQ_JOB_STATUS), location='args', required=True,
+parser1.add_argument(name='job_status', type=str, choices=tuple(Config.RQ_JOB_STATUS), location='args', required=True,
                      help=JOB_STATUS_HELP)
 
 parser2 = reqparse.RequestParser(bundle_errors=True)
-parser2.add_argument(name='queue_name', type=str, choices=(Config.RQ_QUEUES), location='form', required=True,
+parser2.add_argument(name='queue_name', type=str, choices=tuple(Config.RQ_QUEUES), location='form', required=True,
                      help=QUEUE_HELP)
 
 
@@ -86,7 +86,7 @@ class NewJobAPI(Resource):
     @ns.doc(id='post job', description='添加任务')
     @ns.expect(parser2)
     def post(self):
-        '''添加任务'''
+        """添加任务"""
         form = request.form
         queue_name = form.get('queue_name')
         if queue_name not in Config.RQ_QUEUES:
@@ -107,7 +107,7 @@ parser3.add_argument(name='job_id', type=str, location='path', required=True, he
 class JobAPI(Resource):
     @ns.doc(id='get job', description='获取单个任务详情')
     def get(self, job_id):
-        '''获取单个任务'''
+        """获取单个任务"""
         try:
             job = Job.fetch(job_id, connection=rq2.connection)
         except NoSuchJobError:
@@ -134,7 +134,7 @@ class JobAPI(Resource):
 
     @ns.doc(id='requeue job', description='重新开始任务')
     def put(self, job_id):
-        '''重新开始任务'''
+        """重新开始任务"""
         try:
             requeue_job(job_id, connection=rq2.connection)
         except NoSuchJobError:
@@ -147,7 +147,7 @@ class JobAPI(Resource):
 
     @ns.doc(id='delete job', description='删除任务')
     def delete(self, job_id):
-        '''删除任务'''
+        """删除任务"""
         try:
             job = Job.fetch(job_id, connection=rq2.connection)
         except NoSuchJobError:

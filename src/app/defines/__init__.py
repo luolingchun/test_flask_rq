@@ -3,6 +3,7 @@
 # @Author  : llc
 # @File    : __init__.py
 
+
 class StatesCode:
     UNKNOWN_ERROR = -2  # 未知错误
     SUCCESS = 0  # 成功
