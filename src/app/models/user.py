@@ -1,8 +1,7 @@
-# coding=utf-8
-'''
-@time=2019/1/14 20:14
-@author=llc
-'''
+# -*- coding: utf-8 -*-
+# @Time    : 2019/5/8 16:15
+# @Author  : llc
+# @File    : __init__.py
 
 from app import db
 
