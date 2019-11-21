@@ -5,3 +5,5 @@ flask_sqlalchemy
 rq
 redis
 flask-RQ2
+flask_cors
+flask_restplus
